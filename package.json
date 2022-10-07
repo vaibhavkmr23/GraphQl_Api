@@ -21,9 +21,18 @@
     "mongoose": "^6.6.1",
     "multer": "^1.4.5-lts.1",
     "socket.io": "^4.5.2",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaibhavkmr23/GraphQl_Api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vaibhavkmr23/GraphQl_Api/issues"
+  },
+  "homepage": "https://github.com/vaibhavkmr23/GraphQl_Api#readme"
 }

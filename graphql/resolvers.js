@@ -1,11 +1,24 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
 
 module.exports = {
     createUser: async function ({ userInput }, req) {
         // const email = agrs.userInput.email;
 
         // return User.findOne().then() // always return the query function inside the resolver when not using async & await
+        
+        const errors = [];
+        if(!validator.isEmail(userInput.email)){
+            errors.push({message: "'Email is Invalid!"})
+        }
+        if(validator.isEmpty(userInput.password) || !validator.isLength(userInput.password, {min: 5})){
+            errors.push({message: "Password too short!"})
+        }
+        if (errors.length > 0){
+            const error = new Error("Invalid Input");
+            throw error;
+        }
         const existingUser = await User.findOne({ email: userInput.email })
         if (existingUser) {
             const error = new Error("User Exists Already!");
