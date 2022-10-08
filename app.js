@@ -49,6 +49,10 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-AlLow-Methods', 'GET, POST, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow_Headers', 'Content-Type, Authorization');
+    // added for graphql error due to Option
+    if (req.method === 'OPTIONS'){
+        return res.sendStatus(200);
+    }
     next();
 });
 
