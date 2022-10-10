@@ -77,7 +77,7 @@ module.exports = {
             throw error;
         }
         const user = await User.findById(req.userId);
-        if (!user){
+        if (!user) {
             const error = new Error("Invalid User.");
             error.code = 401;
             throw error;
@@ -91,6 +91,7 @@ module.exports = {
         const createdPost = await post.save();
         // Add post to users posts
         user.posts.push(createdPost);
+        await user.save();
         return { ...createdPost._doc, _id: createdPost._id.toString(), createdAt: createdPost.createdAt.toISOString(), updatedAt: createdPost.updatedAt.toISOString() }
     }
 };
