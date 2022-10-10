@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const Post = require('../models/user');
+const Post = require('../models/post');
 
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
@@ -58,7 +58,7 @@ module.exports = {
         return { token: token, userId: user._id.toString() };
     },
     createPost: async function ({ postInput }, req) {
-        if (req.isAuth) {
+        if (!req.isAuth) {
             const error = new Error('Not Authenticated');
             error.code = 401;
             throw error;
