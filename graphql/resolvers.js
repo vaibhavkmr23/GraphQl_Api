@@ -121,5 +121,24 @@ module.exports = {
                 }
             }), totalPosts: totalPosts
         }
+    },
+    post: async function({id}, req){
+        if (!req.isAuth) {
+            const error = new Error('Not Authenticated');
+            error.code = 401;
+            throw error;
+        }
+        const post = await Post.findById(id).populate('creator');// Do populate else u will get error message of "'Cannot return null for non-nullable field User.name.'" while viewing single post in UI
+        console.log(post);
+        if(!post){
+            const error = new Error("No Post Found");
+            throw error;
+        }
+        return {
+            ...post._doc,
+            _id: post._id.toString(),
+            createdAt: post.createdAt.toString(),
+            // updatedAt: post.updatedAt.toString()
+        }
     }
 };
