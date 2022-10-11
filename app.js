@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 // Initializing app
 const express = require('express');
@@ -51,13 +52,27 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-AlLow-Methods', 'GET, POST, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow_Headers', 'Content-Type, Authorization');
     // added for graphql error due to Option
-    if (req.method === 'OPTIONS'){
+    if (req.method === 'OPTIONS') {
         return res.sendStatus(200);
     }
     next();
 });
 
 app.use(auth);
+
+app.put('/post-image', (req, res, next) => {
+    if (!req.isAuth){
+        throw new Error('Not authenticated!!')
+    }
+    if (!req.file) {
+        return res.status(200).json({ message: 'No File Provided!' });
+    }
+    if (req.body.oldPath) {
+        clearImage(req.body.oldPath)
+    }
+    return res.status(201).json({ message: 'File Stored.', filePath: req.file.path });
+});
+
 
 app.use('/graphql', graphqlHTTP({
     schema: graphqlSchema,
@@ -90,3 +105,7 @@ mongoose.connect('mongodb+srv://Vaibhav:23101995@cluster0.gsxn3bf.mongodb.net/me
         console.log("Error is:", err)
     })
 
+const clearImage = filePath => {
+    filePath = path.join(__dirname, '..', filePath);
+    fs.unlink(filePath, err => console.log(err));
+}
