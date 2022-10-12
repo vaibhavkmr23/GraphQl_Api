@@ -122,7 +122,7 @@ module.exports = {
             }), totalPosts: totalPosts
         }
     },
-    post: async function({id}, req){
+    post: async function ({ id }, req) {
         if (!req.isAuth) {
             const error = new Error('Not Authenticated');
             error.code = 401;
@@ -130,7 +130,7 @@ module.exports = {
         }
         const post = await Post.findById(id).populate('creator');// Do populate else u will get error message of "'Cannot return null for non-nullable field User.name.'" while viewing single post in UI
         console.log(post);
-        if(!post){
+        if (!post) {
             const error = new Error("No Post Found");
             throw error;
         }
@@ -140,5 +140,51 @@ module.exports = {
             createdAt: post.createdAt.toString(),
             // updatedAt: post.updatedAt.toString()
         }
+    },
+    updatePost: async function ({ id, postInput }, req) {
+        if (!req.isAuth) {
+            const error = new Error('Not Authenticated');
+            error.code = 401;
+            throw error;
+        }
+        const post = await Post.findById(id).populate("creator");
+        if (!post) {
+            const error = new Error('No Post Found!');
+            error.code = 404;
+            throw error;
+        }
+        // creator is of post should match with person editing
+        if (post.creator._id.toString() !== req.userId.toString()) {
+            const error = new Error('You are not authorized!!');
+            error.code = 403;
+            throw error;
+        }
+        // checking validation errors
+        const errors = []
+        if (validator.isEmpty(postInput.title) || !validator.isLength(postInput.title, { min: 5 })) {
+            errors.push({ message: "Invalid Title!" });
+        }
+        if (validator.isEmpty(postInput.content) || !validator.isLength(postInput.content, { min: 5 })) {
+            errors.push({ message: "Invalid Content!" });
+        }
+        if (errors.length > 0) {
+            const error = new Error("Invalid Input");
+            error.data = errors;
+            error.code = 422;
+            throw error;
+        }
+        post.title = postInput.title;
+        post.content = postInput.content;
+        if (postInput.imageUrl !== 'undefined'){
+            post.imageUrl = postInput.imageUrl;
+        }
+        const updatePost = await post.save();
+        return {
+            ...updatePost._doc,
+            _id: updatePost._id.toString(),
+            createdAt: updatePost.createdAt.toISOString(),
+            updatedAt: updatePost.updatedAt.toISOString()
+        }
+
     }
 };
