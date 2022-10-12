@@ -68,7 +68,8 @@ app.put('/post-image', (req, res, next) => {
         return res.status(200).json({ message: 'No File Provided!' });
     }
     if (req.body.oldPath) {
-        clearImage(req.body.oldPath)
+        console.log("hii", req.body.oldPath);
+        clearImage(req.body.oldPath);
     }
     return res.status(201).json({ message: 'File Stored.', filePath: req.file.path });
 });
@@ -106,6 +107,6 @@ mongoose.connect('mongodb+srv://Vaibhav:23101995@cluster0.gsxn3bf.mongodb.net/me
     })
 
 const clearImage = filePath => {
-    filePath = path.join(__dirname, '..', filePath);
+    filePath = path.join(__dirname, '.', filePath);
     fs.unlink(filePath, err => console.log(err));
 }
