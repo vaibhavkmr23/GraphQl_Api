@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 
 // Initializing app
 const express = require('express');
@@ -14,6 +13,7 @@ const { graphqlHTTP } = require('express-graphql')
 const graphqlSchema = require('./graphql/schema');
 const graphResolver = require('./graphql/resolvers');
 const auth = require('./middleware/auth');
+const {clearImage} = require('./utils/file');
 
 // const { v4: uuidv4 } = require('uuid');
 
@@ -106,7 +106,3 @@ mongoose.connect('mongodb+srv://Vaibhav:23101995@cluster0.gsxn3bf.mongodb.net/me
         console.log("Error is:", err)
     })
 
-const clearImage = filePath => {
-    filePath = path.join(__dirname, '.', filePath);
-    fs.unlink(filePath, err => console.log(err));
-}
